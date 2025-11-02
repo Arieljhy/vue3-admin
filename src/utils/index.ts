@@ -270,7 +270,8 @@ export function handleRowAccordingToProp(row: { [key: string]: any }, prop: stri
  * @param {String} prop 当前 prop
  * @returns {String}
  * */
-export function handleProp(prop: string) {
+export function handleProp(prop?: string) {
+  if (!prop) return "";
   const propArr = prop.split(".");
   if (propArr.length == 1) return prop;
   return propArr[propArr.length - 1];

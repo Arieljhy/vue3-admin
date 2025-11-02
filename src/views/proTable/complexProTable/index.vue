@@ -46,6 +46,7 @@ import { CirclePlus, Pointer, Delete, Refresh } from "@element-plus/icons-vue";
 import type { TableColumnCtx } from "element-plus/es/components/table/src/table-column/defaults";
 import { ProTableInstance, ColumnProps, HeaderRenderScope } from "@/components/ProTable/interface";
 import { getUserList, deleteUser, resetUserPassWord, getUserStatus, getUserGender } from "@/api/modules/user";
+import { DefaultRow } from "element-plus/es/components/table/src/table/defaults";
 
 // ProTable 实例
 const proTable = ref<ProTableInstance>();
@@ -107,7 +108,7 @@ const setCurrent = () => {
 };
 
 // 表尾合计行（自行根据条件计算）
-interface SummaryMethodProps<T = User.ResUserList> {
+interface SummaryMethodProps<T extends DefaultRow = User.ResUserList> {
   columns: TableColumnCtx<T>[];
   data: T[];
 }

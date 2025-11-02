@@ -93,5 +93,6 @@
     "yiwen",
     "zhongyingwen",
     "zhuti"
-  ]
+  ],
+  "vue-i18n.i18nPaths": ""
 }

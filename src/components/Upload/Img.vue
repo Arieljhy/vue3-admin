@@ -55,7 +55,7 @@ import { ElNotification, formContextKey, formItemContextKey } from "element-plus
 import type { UploadProps, UploadRequestOptions } from "element-plus";
 
 interface UploadFileProps {
-  imageUrl: string; // 图片地址 ==> 必传
+  imageUrl?: string; // 图片地址 ==> 必传
   api?: (params: any) => Promise<any>; // 上传图片的 api 方法，一般项目上传都是同一个 api 方法，在组件里直接引入即可 ==> 非必传
   drag?: boolean; // 是否支持拖拽上传 ==> 非必传（默认为 true）
   disabled?: boolean; // 是否禁用上传组件 ==> 非必传（默认为 false）
@@ -97,7 +97,7 @@ const self_disabled = computed(() => {
  * @param options upload 所有配置项
  * */
 const emit = defineEmits<{
-  "update:imageUrl": [value: string];
+  "update:imageUrl": [value?: string];
 }>();
 const handleHttpUpload = async (options: UploadRequestOptions) => {
   let formData = new FormData();

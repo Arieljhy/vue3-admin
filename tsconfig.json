@@ -36,7 +36,8 @@
     "src/**/*.vue",
     "build/**/*.ts",
     "build/**/*.d.ts",
-    "vite.config.ts"
+    "vite.config.ts",
+    "auto-imports.d.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.js"]
 }

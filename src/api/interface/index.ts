@@ -1,3 +1,5 @@
+import { UploadUserFile } from "element-plus";
+
 // 请求响应参数（不包含data）
 export interface Result {
   code: string;
@@ -66,7 +68,7 @@ export namespace User {
     createTime: string;
     status: number;
     avatar: string;
-    photo: any[];
+    photo: UploadUserFile[];
     children?: ResUserList[];
   }
   export interface ResStatus {

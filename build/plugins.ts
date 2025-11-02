@@ -11,6 +11,7 @@ import viteCompression from "vite-plugin-compression";
 import vueSetupExtend from "unplugin-vue-setup-extend-plus/vite";
 import NextDevTools from "vite-plugin-vue-devtools";
 import { codeInspectorPlugin } from "code-inspector-plugin";
+import AutoImport from "unplugin-auto-import/vite";
 
 /**
  * 创建 vite 插件
@@ -22,6 +23,15 @@ export const createVitePlugins = (viteEnv: ViteEnv): (PluginOption | PluginOptio
     vue(),
     // vue 可以使用 jsx/tsx 语法
     vueJsx(),
+    AutoImport({
+      imports: [
+        // 插件预设支持导入的api
+        "vue",
+        "vue-router",
+        "pinia"
+        // 自定义导入的api
+      ]
+    }),
     // devTools
     VITE_DEVTOOLS && NextDevTools({ launchEditor: "code" }),
     // esLint 报错信息显示在浏览器界面上
