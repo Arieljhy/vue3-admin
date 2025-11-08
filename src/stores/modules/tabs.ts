@@ -2,75 +2,83 @@ import router from "@/routers";
 import { defineStore } from "pinia";
 import { getUrlWithParams } from "@/utils";
 import { useKeepAliveStore } from "./keepAlive";
-import { TabsState, TabsMenuProps } from "@/stores/interface";
+import { TabsMenuProps } from "@/stores/interface";
 import piniaPersistConfig from "@/stores/helper/persist";
 
 const keepAliveStore = useKeepAliveStore();
 
-export const useTabsStore = defineStore({
-  id: "geeker-tabs",
-  state: (): TabsState => ({
-    tabsMenuList: []
-  }),
-  actions: {
+export const useTabsStore = defineStore(
+  "geeker-tabs",
+  () => {
+    const tabsMenuList = ref<TabsMenuProps[]>([]);
+
     // Add Tabs
-    async addTabs(tabItem: TabsMenuProps) {
-      if (this.tabsMenuList.every(item => item.path !== tabItem.path)) {
-        this.tabsMenuList.push(tabItem);
+    const addTabs = (tabItem: TabsMenuProps) => {
+      if (tabsMenuList.value.every(item => item.path !== tabItem.path)) {
+        tabsMenuList.value.push(tabItem);
       }
       // add keepalive
       if (!keepAliveStore.keepAliveName.includes(tabItem.name) && tabItem.isKeepAlive) {
         keepAliveStore.addKeepAliveName(tabItem.path);
       }
-    },
+    };
     // Remove Tabs
-    async removeTabs(tabPath: string, isCurrent: boolean = true) {
+    const removeTabs = (tabPath: string, isCurrent: boolean = true) => {
       if (isCurrent) {
-        this.tabsMenuList.forEach((item, index) => {
+        tabsMenuList.value.forEach((item, index) => {
           if (item.path !== tabPath) return;
-          const nextTab = this.tabsMenuList[index + 1] || this.tabsMenuList[index - 1];
+          const nextTab = tabsMenuList.value[index + 1] || tabsMenuList.value[index - 1];
           if (!nextTab) return;
           router.push(nextTab.path);
         });
       }
       // remove keepalive
-      const tabItem = this.tabsMenuList.find(item => item.path === tabPath);
+      const tabItem = tabsMenuList.value.find(item => item.path === tabPath);
       tabItem?.isKeepAlive && keepAliveStore.removeKeepAliveName(tabItem.path);
       // set tabs
-      this.tabsMenuList = this.tabsMenuList.filter(item => item.path !== tabPath);
-    },
+      tabsMenuList.value = tabsMenuList.value.filter(item => item.path !== tabPath);
+    };
     // Close Tabs On Side
-    async closeTabsOnSide(path: string, type: "left" | "right") {
-      const currentIndex = this.tabsMenuList.findIndex(item => item.path === path);
+    const closeTabsOnSide = (path: string, type: "left" | "right") => {
+      const currentIndex = tabsMenuList.value.findIndex(item => item.path === path);
       if (currentIndex !== -1) {
-        const range = type === "left" ? [0, currentIndex] : [currentIndex + 1, this.tabsMenuList.length];
-        this.tabsMenuList = this.tabsMenuList.filter((item, index) => {
+        const range = type === "left" ? [0, currentIndex] : [currentIndex + 1, tabsMenuList.value.length];
+        tabsMenuList.value = tabsMenuList.value.filter((item, index) => {
           return index < range[0] || index >= range[1] || !item.close;
         });
       }
       // set keepalive
-      const KeepAliveList = this.tabsMenuList.filter(item => item.isKeepAlive);
+      const KeepAliveList = tabsMenuList.value.filter(item => item.isKeepAlive);
       keepAliveStore.setKeepAliveName(KeepAliveList.map(item => item.path));
-    },
+    };
     // Close MultipleTab
-    async closeMultipleTab(tabsMenuValue?: string) {
-      this.tabsMenuList = this.tabsMenuList.filter(item => {
+    const closeMultipleTab = (tabsMenuValue?: string) => {
+      tabsMenuList.value = tabsMenuList.value.filter(item => {
         return item.path === tabsMenuValue || !item.close;
       });
       // set keepalive
-      const KeepAliveList = this.tabsMenuList.filter(item => item.isKeepAlive);
+      const KeepAliveList = tabsMenuList.value.filter(item => item.isKeepAlive);
       keepAliveStore.setKeepAliveName(KeepAliveList.map(item => item.path));
-    },
+    };
     // Set Tabs
-    async setTabs(tabsMenuList: TabsMenuProps[]) {
-      this.tabsMenuList = tabsMenuList;
-    },
+    const setTabs = (list: TabsMenuProps[]) => {
+      tabsMenuList.value = list;
+    };
     // Set Tabs Title
-    async setTabsTitle(title: string) {
-      this.tabsMenuList.forEach(item => {
+    const setTabsTitle = (title: string) => {
+      tabsMenuList.value.forEach(item => {
         if (item.path == getUrlWithParams()) item.title = title;
       });
-    }
+    };
+    return {
+      tabsMenuList,
+      addTabs,
+      removeTabs,
+      closeTabsOnSide,
+      closeMultipleTab,
+      setTabs,
+      setTabsTitle
+    };
   },
-  persist: piniaPersistConfig("geeker-tabs")
-});
+  { persist: piniaPersistConfig("geeker-tabs") }
+);
